@@ -1,0 +1,13 @@
+MobileNetV1
+1.学习率0.01 批大小32 epoch为60 图像44*44，最好测试准确率95.960
+2.学习率0.01 批大小16 epoch为60 图像44*44，最好测试准确率96.970 best_Test_acc_epoch: 37
+
+MobileNetV2
+1.学习率0.01 批大小32 epoch为60 图像44*44，最好测试准确率 95.960
+best_Test_acc_epoch: 18
+2.学习率0.01 批大小16 epoch为60 图像44*44，最好测试准确率best_Test_acc: 95.960
+best_Test_acc_epoch: 7
+
+Resnet18
+1.学习率0.01 批大小32 epoch为60 图像44*44，最好测试准确率best_Test_acc: 96.970
+best_Test_acc_epoch: 32
