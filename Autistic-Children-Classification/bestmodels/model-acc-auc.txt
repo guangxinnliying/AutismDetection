@@ -1,0 +1,11 @@
+1.
+MobileNetV10.85+0.9163.pth   0
+MobileNetV10.845+0.9136.pth  1
+MobileNetV10.845+0.9196.pth  2
+MobileNetV10.8217+0.9232.pth  3
+MobileNetV10.8333+0.9036.pth   4
+MobileNetV10.8333+0.9155.pth   5
+MobileNetV10.8383+0.9133.pth  6
+MobileNetV10.8467+0.916.pth   7
+MobileNetV10.8483+0.9226.pth   8
+MobileNetV10.8533+0.9181.pth   9

@@ -1,0 +1,307 @@
+current_fold is:0Evaluation index of MobileNetV1:
+test_acc is:0.85
+sensitivity is:0.8667
+specificity is:0.8333
+error_rate is:0.15
+auc is:0.9163
+G_Mean is:0.8498
+F_Measure is:0.8525
+
+Evaluation index of MobileNetV2:
+test_acc is:0.87
+sensitivity is:0.85
+specificity is:0.89
+error_rate is:0.13
+auc is:0.9431
+G_Mean is:0.8698
+F_Measure is:0.8673
+
+Evaluation index of MobileNetV1+V2:
+test_acc is:0.8683
+sensitivity is:0.8767
+specificity is:0.86
+error_rate is:0.1317
+auc is:0.9473
+G_Mean is:0.8683
+F_Measure is:0.8694
+
+
+current_fold is:1Evaluation index of MobileNetV1:
+test_acc is:0.845
+sensitivity is:0.86
+specificity is:0.83
+error_rate is:0.155
+auc is:0.9136
+G_Mean is:0.8449
+F_Measure is:0.8473
+
+Evaluation index of MobileNetV2:
+test_acc is:0.88
+sensitivity is:0.9067
+specificity is:0.8533
+error_rate is:0.12
+auc is:0.9501
+G_Mean is:0.8796
+F_Measure is:0.8831
+
+Evaluation index of MobileNetV1+V2:
+test_acc is:0.8817
+sensitivity is:0.9
+specificity is:0.8633
+error_rate is:0.1183
+auc is:0.9509
+G_Mean is:0.8815
+F_Measure is:0.8838
+
+
+current_fold is:2Evaluation index of MobileNetV1:
+test_acc is:0.845
+sensitivity is:0.9067
+specificity is:0.7833
+error_rate is:0.155
+auc is:0.9196
+G_Mean is:0.8427
+F_Measure is:0.854
+
+Evaluation index of MobileNetV2:
+test_acc is:0.825
+sensitivity is:0.7733
+specificity is:0.8767
+error_rate is:0.175
+auc is:0.9026
+G_Mean is:0.8234
+F_Measure is:0.8155
+
+Evaluation index of MobileNetV1+V2:
+test_acc is:0.8617
+sensitivity is:0.8933
+specificity is:0.83
+error_rate is:0.1383
+auc is:0.9329
+G_Mean is:0.8611
+F_Measure is:0.8659
+
+
+current_fold is:3Evaluation index of MobileNetV1:
+test_acc is:0.8217
+sensitivity is:0.93
+specificity is:0.7133
+error_rate is:0.1783
+auc is:0.9232
+G_Mean is:0.8145
+F_Measure is:0.8391
+
+Evaluation index of MobileNetV2:
+test_acc is:0.875
+sensitivity is:0.8433
+specificity is:0.9067
+error_rate is:0.125
+auc is:0.941
+G_Mean is:0.8744
+F_Measure is:0.8709
+
+Evaluation index of MobileNetV1+V2:
+test_acc is:0.8617
+sensitivity is:0.9
+specificity is:0.8233
+error_rate is:0.1383
+auc is:0.9491
+G_Mean is:0.8608
+F_Measure is:0.8668
+
+
+current_fold is:4Evaluation index of MobileNetV1:
+test_acc is:0.8333
+sensitivity is:0.8667
+specificity is:0.8
+error_rate is:0.1667
+auc is:0.9036
+G_Mean is:0.8327
+F_Measure is:0.8387
+
+Evaluation index of MobileNetV2:
+test_acc is:0.8417
+sensitivity is:0.7167
+specificity is:0.9667
+error_rate is:0.1583
+auc is:0.9349
+G_Mean is:0.8323
+F_Measure is:0.819
+
+Evaluation index of MobileNetV1+V2:
+test_acc is:0.8617
+sensitivity is:0.84
+specificity is:0.8833
+error_rate is:0.1383
+auc is:0.9346
+G_Mean is:0.8614
+F_Measure is:0.8586
+
+
+current_fold is:5Evaluation index of MobileNetV1:
+test_acc is:0.8333
+sensitivity is:0.91
+specificity is:0.7567
+error_rate is:0.1667
+auc is:0.9155
+G_Mean is:0.8298
+F_Measure is:0.8452
+
+Evaluation index of MobileNetV2:
+test_acc is:0.8567
+sensitivity is:0.8733
+specificity is:0.84
+error_rate is:0.1433
+auc is:0.9267
+G_Mean is:0.8565
+F_Measure is:0.859
+
+Evaluation index of MobileNetV1+V2:
+test_acc is:0.8517
+sensitivity is:0.9133
+specificity is:0.79
+error_rate is:0.1483
+auc is:0.9425
+G_Mean is:0.8494
+F_Measure is:0.8603
+
+
+current_fold is:6Evaluation index of MobileNetV1:
+test_acc is:0.8383
+sensitivity is:0.88
+specificity is:0.7967
+error_rate is:0.1617
+auc is:0.9133
+G_Mean is:0.8373
+F_Measure is:0.8448
+
+Evaluation index of MobileNetV2:
+test_acc is:0.8633
+sensitivity is:0.7567
+specificity is:0.97
+error_rate is:0.1367
+auc is:0.9457
+G_Mean is:0.8567
+F_Measure is:0.847
+
+Evaluation index of MobileNetV1+V2:
+test_acc is:0.8717
+sensitivity is:0.85
+specificity is:0.8933
+error_rate is:0.1283
+auc is:0.9463
+G_Mean is:0.8714
+F_Measure is:0.8688
+
+
+current_fold is:7Evaluation index of MobileNetV1:
+test_acc is:0.8467
+sensitivity is:0.8767
+specificity is:0.8167
+error_rate is:0.1533
+auc is:0.916
+G_Mean is:0.8461
+F_Measure is:0.8511
+
+Evaluation index of MobileNetV2:
+test_acc is:0.8783
+sensitivity is:0.8233
+specificity is:0.9333
+error_rate is:0.1217
+auc is:0.9466
+G_Mean is:0.8766
+F_Measure is:0.8713
+
+Evaluation index of MobileNetV1+V2:
+test_acc is:0.88
+sensitivity is:0.86
+specificity is:0.9
+error_rate is:0.12
+auc is:0.9527
+G_Mean is:0.8798
+F_Measure is:0.8776
+
+
+current_fold is:8Evaluation index of MobileNetV1:
+test_acc is:0.8483
+sensitivity is:0.88
+specificity is:0.8167
+error_rate is:0.1517
+auc is:0.9226
+G_Mean is:0.8477
+F_Measure is:0.853
+
+Evaluation index of MobileNetV2:
+test_acc is:0.8867
+sensitivity is:0.8733
+specificity is:0.9
+error_rate is:0.1133
+auc is:0.9468
+G_Mean is:0.8866
+F_Measure is:0.8851
+
+Evaluation index of MobileNetV1+V2:
+test_acc is:0.89
+sensitivity is:0.8833
+specificity is:0.8967
+error_rate is:0.11
+auc is:0.9504
+G_Mean is:0.89
+F_Measure is:0.8893
+
+
+current_fold is:9Evaluation index of MobileNetV1:
+test_acc is:0.8533
+sensitivity is:0.87
+specificity is:0.8367
+error_rate is:0.1467
+auc is:0.9181
+G_Mean is:0.8532
+F_Measure is:0.8557
+
+Evaluation index of MobileNetV2:
+test_acc is:0.8883
+sensitivity is:0.86
+specificity is:0.9167
+error_rate is:0.1117
+auc is:0.949
+G_Mean is:0.8879
+F_Measure is:0.8851
+
+Evaluation index of MobileNetV1+V2:
+test_acc is:0.8983
+sensitivity is:0.8867
+specificity is:0.91
+error_rate is:0.1017
+auc is:0.9544
+G_Mean is:0.8983
+F_Measure is:0.8971
+
+
+Avg of evaluation index of MobileNetV1:
+test_acc is:0.8415
+sensitivity is:0.8847
+specificity is:0.7983
+error_rate is:0.1585
+auc is:0.9162
+G_Mean is:0.8399
+F_Measure is:0.8481
+
+Evaluation index of MobileNetV2:
+test_acc is:0.8665
+sensitivity is:0.8277
+specificity is:0.9053
+error_rate is:0.1335
+auc is:0.9386
+G_Mean is:0.8644
+F_Measure is:0.8603
+
+Evaluation index of MobileNetV1+MobileNetV2:
+test_acc is:0.8727
+sensitivity is:0.8803
+specificity is:0.865
+error_rate is:0.1273
+auc is:0.9461
+G_Mean is:0.8722
+F_Measure is:0.8738
+

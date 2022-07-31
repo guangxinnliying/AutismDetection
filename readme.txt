@@ -1,4 +1,4 @@
-The two projects described in the readme file, "Facial-Expression-Recognition" and "Autistic-Cross-Validation", are both running in python and pytorch in the windows environment.
+The two projects described in the readme file, "Facial-Expression-Recognition" and "Autistic-Children-Classification", are both running in python and pytorch in the windows environment.
 
 1. The first phase of two-phase transfer learning
 
@@ -14,14 +14,62 @@ The specific modifications to this project are as follows:
 
 2. The second phase of two-phase transfer learning
 
-  The project "Autistic-Cross-Validation" is used to realize two experiments, the one-phase transfer learning and the two-phase transfer learning.
+  The project "Autistic-Children-Classification" is used to realize two experiments, the one-phase transfer learning and the two-phase transfer learning.
 
-(1) Description of each folder of the project: in this project, folder "data" stores the children's face data set obtained from Kaggle. Folder "models" stores the implementation code of vgg16, vgg19, mobilenetv1 and mobilenetv2 models. Folder "pretrainedmodels" stores the model parameters of vgg16, vgg19, mobilenetv1 and mobilenetv2 trained on ck+ facial expression data set in the first phase. Folder "bestmodels" stores 10 mobilenetv1 models and 10 mobilenetv2 models for multi classifier integration experiments. Folder "rocdatafile" stores the data files used to draw the four models' ROC. Folder "Util" stores the code of data set partition of 10-fold cross validation.
+(1) Description of each folder of the project: in this project, folder "data" stores the children's face data set obtained from Kaggle, and the pictures have been compressed to 44*44. Folder "models" stores the implementation code of vgg16, vgg19, mobilenetv1 and mobilenetv2 models. Folder "pretrainedmodels" stores the model parameters of vgg16, vgg19, mobilenetv1 and mobilenetv2 trained on ck+ facial expression data set in the first phase. Folder "bestmodels" stores 10 mobilenetv1 models and 10 mobilenetv2 models for multi classifier integration experiments. Folder "rocdatafile" stores the data files used to draw the four models' ROC. 
 
 (2) Program description
 
-A.cross_validation_eval_indicator.py. It is used in one-phase transfer learning experiment and two-phase transfer learning experiment. The program realizes 10-fold cross validation, and can only run one model at a time. The model is specified by assigning a value to the modelstr string of 54 lines. For example, modelstr= "mobilenetv2", then run the mobilenetv2 model. The program has a code segment (from 100 lines to 110 lines) that is used to import pre trained model parameters. If these lines of code are commented out, then the program realizes the one-phase transfer learning experiment, on the contrary, it realizes the two-phase transfer learning. Code line 257 is used to save the model structure and parameters for multi classifier integration experiments. At the end of the program, a piece of code (from line 315 to line 319) is used to save the data file used to draw ROC. If you want to save the data file, remove the comments of these lines.
+A.autism_face_classification.py. It is used in one-phase transfer learning experiment and two-phase transfer learning experiment, and can only run one model at a time. The model is specified by assigning a value to the modelstr string of 51 lines. For example, modelstr= "mobilenetv2", then run the mobilenetv2 model. The program has a code segment that is used to import pre trained model parameters. The code segment is about from line 67 to 80,and the code is as follows:
+-------------------------------------------------------
+parameterfile='./pretrainedModels/'+modelstr+'.pth'
+pretrained_dict=torch.load(parameterfile)
+model_dict = model.state_dict()
+state_dict={}
+i=0
+j=0
+for k,v in pretrained_dict.items():
+    i=i+1
+    if (k in model_dict.keys()) and (k[0:k.index('.')]not in('classifier','linear','fc')):
+        state_dict[k]=v
+        j=j+1
+        
+model_dict.update(state_dict)
+model.load_state_dict(model_dict) 
+-----------------------------------------------------------
+
+If these lines of code are commented out, then the program realizes the one-phase transfer learning experiment, on the contrary, it realizes the two-phase transfer learning. 
+
+There is a IF statement (aoubt line 188-189 ) that is used to save the model structure and parameters for multi classifier integration experiments. The code is as follows:
+------------------------------------------------------------------------------------------------------------------------
+if  max_auc>0.9:           
+            torch.save(model,'./bestmodels/tmp/'+modelstr+str(round(max_test_acc,4))+"+"+str(round(max_auc,4))+'.pth')
+------------------------------------------------------------------------------------------------------------------------
+
+At the end of the program, a piece of code (about from line 219 to line 238) is used to save the data file used to draw ROC. If you want to save the data file, remove the comments of these lines.The code is as follows:
+---------------------------------------------------------
+if modelstr=="VGG16":
+    datafile = open("./VGG16ROC.txt", "w")
+    datafile.write(str(fpr1)+'\n')
+    datafile.write(str(tpr1)+'\n')
+    datafile.close()
+elif modelstr=="VGG19":
+    datafile = open("./VGG19ROC.txt", "w")
+    datafile.write(str(fpr2)+'\n')
+    datafile.write(str(tpr2)+'\n')
+    datafile.close()
+elif modelstr=="MobileNetV1":
+    datafile = open("./MobileNetV1ROC.txt", "w")
+    datafile.write(str(fpr3)+'\n')
+    datafile.write(str(tpr3)+'\n')
+    datafile.close()
+elif modelstr=="MobileNetV2":
+    datafile = open("./MobileNetV2ROC.txt", "w")
+    datafile.write(str(fpr4)+'\n')
+    datafile.write(str(tpr4)+'\n')
+    datafile.close() 
+-------------------------------------------------------------
 
 B.drawROC_V2.py. This program is used to draw the ROC curves of vgg16, vgg19, mobilenetv1 and mobilenetv2 in one-phase transfer learning and the ROC curves of two-phase transfer learning.
 
-C.multi_classifer_v1.py. The program is used to realize the experiment of multi classifier integration, and the experimental results are saved in file "10foldrecord.txt". Thise file saves various evaluation metrics of mobilenetv1, mobilenetv2 and integrated classifiers of each fold, including ACC, AUC, sensitivity, specificity and other evaluation metrics, as well as 10 folds average evaluation metrics of mobilenetv1, mobilenetv2 and the integrated classifier.
+C.multi_classifer_v1.py. The program is used to realize the experiment of multi classifier integration, and the experimental results are saved in file "10timerecord.txt". Thise file saves various evaluation metrics of mobilenetv1, mobilenetv2 and integrated classifiers of each time, including ACC, AUC, sensitivity, specificity and other evaluation metrics, as well as 10 times average evaluation metrics of mobilenetv1, mobilenetv2 and the integrated classifier.
