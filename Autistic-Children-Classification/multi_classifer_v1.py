@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
-#该程序用于10折交叉验证的多分类器
+﻿# -*- coding: utf-8 -*-
+#该程序使用论文中提出的整合方法
 import torch
 from torch import nn, optim
 from torch.autograd import Variable
@@ -12,7 +12,7 @@ from sklearn.metrics import roc_curve
 from sklearn.metrics import auc
 from models.mobilenetv2 import MobileNetV2
 from models.mobilenetv1 import MobileNetV1
-
+from models.mobilenetv3 import MobileNetV3_Large
 
 # 定义一些超参数
 batch_size = 64 
@@ -24,7 +24,7 @@ data_transform=transforms.Compose([transforms.ToTensor(),transforms.Normalize(no
 samplefile="./data/samplelist_train.txt"  #用于训练及验证
 samplefile_test="./data/samplelist_test.txt" #用于评估
 test_batchs=1
-total_time=10
+total_time=1
 if torch.cuda.is_available():
     use_cuda=True
     print("cuda is available!!!")
@@ -35,7 +35,7 @@ test_dataloader = DataLoader(dataset=test_dataset,
                               batch_size=test_batchs,
                               shuffle=True,drop_last=False,
                               num_workers=0) 
-recordfile='./bestmodels/10timerecord.txt'
+recordfile='./bestmodels/resultrecord.txt'
 file=open(recordfile,'w')
 
 total_test_acc1 =0.0  
@@ -63,26 +63,27 @@ total_G_Mean3=0.0
 total_F_Measure3=0.0
     
 for current_time in range(total_time):
-
-    model1=torch.load('./bestmodels/MobileNetV1T'+str(current_time)+'.pth')
-    model2=torch.load('./bestmodels/MobileNetV2T'+str(current_time)+'.pth')
+    modelname1="MobileNetV2"
+    modelname2="MobileNetV3"
+    model1=torch.load('./bestmodels/'+modelname1+'T'+str(current_time)+'.pth')
+    model2=torch.load('./bestmodels/'+modelname2+'T'+str(current_time)+'.pth')
 
     row_i=0
 
     y=[9]*len(test_dataset) #len(test_dataset) 是测试集中包含图片的数量
-    #下面的变量是MoblieNetV1的
+    #下面的变量是model1的
     pred_per1=[9.]*len(test_dataset)    
     TP1=0
     TN1=0
     FP1=0
     FN1=0
-    #下面的变量是MoblieNetV2的
+    #下面的变量是model2的
     pred_per2=[9.]*len(test_dataset)    
     TP2=0
     TN2=0
     FP2=0
     FN2=0
-    #下面的变量是MoblieNetV1+MoblieNetV2的
+    #下面的变量是model1+model2的
     pred_per3=[9.]*len(test_dataset)    
     TP3=0
     TN3=0
@@ -233,7 +234,7 @@ for current_time in range(total_time):
     total_F_Measure3+=F_Measure3
     
     file.write("current_fold is:"+str(current_time))
-    file.write("Evaluation index of MobileNetV1:"+'\n')
+    file.write('Evaluation index of '+modelname1+'\n')
     file.write("test_acc is:"+str(round(test_acc1,4))+'\n')    
     file.write("sensitivity is:"+str(round(sensitivity1,4))+'\n')
     file.write("specificity is:"+str(round(specificity1,4))+'\n')
@@ -242,7 +243,7 @@ for current_time in range(total_time):
     file.write("G_Mean is:"+str(round(G_Mean1,4))+'\n')
     file.write("F_Measure is:"+str(round(F_Measure1,4))+'\n')
     file.write('\n')
-    file.write("Evaluation index of MobileNetV2:"+'\n')
+    file.write('Evaluation index of '+modelname2+'\n')
     file.write("test_acc is:"+str(round(test_acc2,4))+'\n')    
     file.write("sensitivity is:"+str(round(sensitivity2,4))+'\n')
     file.write("specificity is:"+str(round(specificity2,4))+'\n')
@@ -251,7 +252,7 @@ for current_time in range(total_time):
     file.write("G_Mean is:"+str(round(G_Mean2,4))+'\n')
     file.write("F_Measure is:"+str(round(F_Measure2,4))+'\n')
     file.write('\n')
-    file.write("Evaluation index of MobileNetV1+V2:"+'\n')
+    file.write('Evaluation index of '+modelname1+'&'+modelname2+'\n')
     file.write("test_acc is:"+str(round(test_acc3,4))+'\n')    
     file.write("sensitivity is:"+str(round(sensitivity3,4))+'\n')
     file.write("specificity is:"+str(round(specificity3,4))+'\n')
@@ -263,7 +264,7 @@ for current_time in range(total_time):
     file.write('\n')
 
     
-    print("Evaluation index of MobileNetV1:")    
+    print('Evaluation index of '+modelname1)    
     print("test_acc is:",test_acc1)    
     print("sensitivity is:",sensitivity1) 
     print("specificity is:",specificity1)    
@@ -272,7 +273,7 @@ for current_time in range(total_time):
     print("G_Mean is:",G_Mean1)    
     print("F_Measure is:",F_Measure1) 
 
-    print("Evaluation index of MobileNetV2:")    
+    print('Evaluation index of '+modelname2)    
     print("test_acc is:",test_acc2)    
     print("sensitivity is:",sensitivity2) 
     print("specificity is:",specificity2)    
@@ -281,7 +282,7 @@ for current_time in range(total_time):
     print("G_Mean is:",G_Mean2)    
     print("F_Measure is:",F_Measure2) 
 
-    print("Evaluation index of MobileNetV1+MobileNetV2:")    
+    print('Evaluation index of '+modelname1+'&'+modelname2)    
     print("test_acc is:",test_acc3)    
     print("sensitivity is:",sensitivity3) 
     print("specificity is:",specificity3)    
@@ -292,63 +293,63 @@ for current_time in range(total_time):
 
     print("count:",count)
 
+if total_time>1:
+    file.write('Avg of evaluation index of '+modelname1+'\n')
+    file.write("test_acc is:"+str(round(total_test_acc1/total_time,4))+'\n')    
+    file.write("sensitivity is:"+str(round(total_sensitivity1/total_time,4))+'\n')
+    file.write("specificity is:"+str(round(total_specificity1/total_time,4))+'\n')
+    file.write("error_rate is:"+str(round(total_error_rate1/total_time,4))+'\n')
+    file.write("auc is:"+str(round(total_roc_auc1/total_time,4))+'\n')
+    file.write("G_Mean is:"+str(round(total_G_Mean1/total_time,4))+'\n')
+    file.write("F_Measure is:"+str(round(total_F_Measure1/total_time,4))+'\n')
+    file.write('\n')
+    file.write('Avg of evaluation index of '+modelname2+'\n')
+    file.write("test_acc is:"+str(round(total_test_acc2/total_time,4))+'\n')    
+    file.write("sensitivity is:"+str(round(total_sensitivity2/total_time,4))+'\n')
+    file.write("specificity is:"+str(round(total_specificity2/total_time,4))+'\n')
+    file.write("error_rate is:"+str(round(total_error_rate2/total_time,4))+'\n')
+    file.write("auc is:"+str(round(total_roc_auc2/total_time,4))+'\n')
+    file.write("G_Mean is:"+str(round(total_G_Mean2/total_time,4))+'\n')
+    file.write("F_Measure is:"+str(round(total_F_Measure2/total_time,4))+'\n')
+    file.write('\n')
+    file.write('Avg of evaluation index of '+modelname1+'&'+modelname2+'\n')
+    file.write("test_acc is:"+str(round(total_test_acc3/total_time,4))+'\n')    
+    file.write("sensitivity is:"+str(round(total_sensitivity3/total_time,4))+'\n')
+    file.write("specificity is:"+str(round(total_specificity3/total_time,4))+'\n')
+    file.write("error_rate is:"+str(round(total_error_rate3/total_time,4))+'\n')
+    file.write("auc is:"+str(round(total_roc_auc3/total_time,4))+'\n')
+    file.write("G_Mean is:"+str(round(total_G_Mean3/total_time,4))+'\n')
+    file.write("F_Measure is:"+str(round(total_F_Measure3/total_time,4))+'\n')
+    file.write('\n')
 
-file.write("Avg of evaluation index of MobileNetV1:"+'\n')
-file.write("test_acc is:"+str(round(total_test_acc1/total_time,4))+'\n')    
-file.write("sensitivity is:"+str(round(total_sensitivity1/total_time,4))+'\n')
-file.write("specificity is:"+str(round(total_specificity1/total_time,4))+'\n')
-file.write("error_rate is:"+str(round(total_error_rate1/total_time,4))+'\n')
-file.write("auc is:"+str(round(total_roc_auc1/total_time,4))+'\n')
-file.write("G_Mean is:"+str(round(total_G_Mean1/total_time,4))+'\n')
-file.write("F_Measure is:"+str(round(total_F_Measure1/total_time,4))+'\n')
-file.write('\n')
-file.write("Evaluation index of MobileNetV2:"+'\n')
-file.write("test_acc is:"+str(round(total_test_acc2/total_time,4))+'\n')    
-file.write("sensitivity is:"+str(round(total_sensitivity2/total_time,4))+'\n')
-file.write("specificity is:"+str(round(total_specificity2/total_time,4))+'\n')
-file.write("error_rate is:"+str(round(total_error_rate2/total_time,4))+'\n')
-file.write("auc is:"+str(round(total_roc_auc2/total_time,4))+'\n')
-file.write("G_Mean is:"+str(round(total_G_Mean2/total_time,4))+'\n')
-file.write("F_Measure is:"+str(round(total_F_Measure2/total_time,4))+'\n')
-file.write('\n')
-file.write("Evaluation index of MobileNetV1+MobileNetV2:"+'\n')
-file.write("test_acc is:"+str(round(total_test_acc3/total_time,4))+'\n')    
-file.write("sensitivity is:"+str(round(total_sensitivity3/total_time,4))+'\n')
-file.write("specificity is:"+str(round(total_specificity3/total_time,4))+'\n')
-file.write("error_rate is:"+str(round(total_error_rate3/total_time,4))+'\n')
-file.write("auc is:"+str(round(total_roc_auc3/total_time,4))+'\n')
-file.write("G_Mean is:"+str(round(total_G_Mean3/total_time,4))+'\n')
-file.write("F_Measure is:"+str(round(total_F_Measure3/total_time,4))+'\n')
-file.write('\n')
-file.close() 
 
-print("Avg of evaluation index of MobileNetV1:")    
-print("test_acc is:",round(total_test_acc1/total_time,4))    
-print("sensitivity is:",round(total_sensitivity1/total_time,4)) 
-print("specificity is:",round(total_specificity1/total_time,4))    
-print("error_rate is:",round(total_error_rate1/total_time,4))  
-print("auc is:",round(total_roc_auc1/total_time,4))    
-print("G_Mean is:",round(total_G_Mean1/total_time,4))    
-print("F_Measure is:",round(total_F_Measure1/total_time,4))
+    print('Avg of evaluation index of '+modelname1)    
+    print("test_acc is:",round(total_test_acc1/total_time,4))    
+    print("sensitivity is:",round(total_sensitivity1/total_time,4)) 
+    print("specificity is:",round(total_specificity1/total_time,4))    
+    print("error_rate is:",round(total_error_rate1/total_time,4))  
+    print("auc is:",round(total_roc_auc1/total_time,4))    
+    print("G_Mean is:",round(total_G_Mean1/total_time,4))    
+    print("F_Measure is:",round(total_F_Measure1/total_time,4))
 
-print("Avg of evaluation index of MobileNetV2:")    
-print("test_acc is:",round(total_test_acc2/total_time,4))    
-print("sensitivity is:",round(total_sensitivity2/total_time,4)) 
-print("specificity is:",round(total_specificity2/total_time,4))    
-print("error_rate is:",round(total_error_rate2/total_time,4))  
-print("auc is:",round(total_roc_auc2/total_time,4))    
-print("G_Mean is:",round(total_G_Mean2/total_time,4))    
-print("F_Measure is:",round(total_F_Measure2/total_time,4))
+    print('Avg of evaluation index of '+modelname2)    
+    print("test_acc is:",round(total_test_acc2/total_time,4))    
+    print("sensitivity is:",round(total_sensitivity2/total_time,4)) 
+    print("specificity is:",round(total_specificity2/total_time,4))    
+    print("error_rate is:",round(total_error_rate2/total_time,4))  
+    print("auc is:",round(total_roc_auc2/total_time,4))    
+    print("G_Mean is:",round(total_G_Mean2/total_time,4))    
+    print("F_Measure is:",round(total_F_Measure2/total_time,4))
 
-print("Avg of evaluation index of MobileNetV1+MobileNetV2:")    
-print("test_acc is:",round(total_test_acc3/total_time,4))    
-print("sensitivity is:",round(total_sensitivity3/total_time,4)) 
-print("specificity is:",round(total_specificity3/total_time,4))    
-print("error_rate is:",round(total_error_rate3/total_time,4))  
-print("auc is:",round(total_roc_auc3/total_time,4))    
-print("G_Mean is:",round(total_G_Mean3/total_time,4))    
-print("F_Measure is:",round(total_F_Measure3/total_time,4))
-   
+    print('Avg of evaluation index of '+modelname1+'&'+modelname2)    
+    print("test_acc is:",round(total_test_acc3/total_time,4))    
+    print("sensitivity is:",round(total_sensitivity3/total_time,4)) 
+    print("specificity is:",round(total_specificity3/total_time,4))    
+    print("error_rate is:",round(total_error_rate3/total_time,4))  
+    print("auc is:",round(total_roc_auc3/total_time,4))    
+    print("G_Mean is:",round(total_G_Mean3/total_time,4))    
+    print("F_Measure is:",round(total_F_Measure3/total_time,4))
+file.close()   
 '''
 rocdatafile='./rocdatafile/MobileNet/mobilev1_roc.txt'
 f=open(rocdatafile,'w')

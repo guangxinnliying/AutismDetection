@@ -18,6 +18,8 @@ from torch.autograd import Variable
 from models import *
 from models.mobilenetv1 import MobileNetV1
 from models.mobilenetv2 import MobileNetV2
+from models.mobilenetv3 import MobileNetV3_Large
+from models.mobilenetv3 import MobileNetV3_Small
 
 parser = argparse.ArgumentParser(description='PyTorch CK+ CNN Training')
 parser.add_argument('--model', type=str, default='VGG19', help='CNN architecture')
@@ -65,7 +67,7 @@ testset = CK(split = 'Testing', fold = opt.fold, transform=transform_test)
 #testloader = torch.utils.data.DataLoader(testset, batch_size=5, shuffle=False, num_workers=1)#我注解掉的，错误同上。
 testloader = torch.utils.data.DataLoader(testset, batch_size=5, shuffle=False)
 
-opt.model='MobileNetV2'
+
 # Model
 print("model is:",opt.model) #我加的
 if opt.model == 'VGG19':
@@ -78,7 +80,11 @@ elif opt.model=='MobileNetV1':
     net = MobileNetV1()
 elif opt.model=='MobileNetV2':
     net = MobileNetV2()    
-
+elif opt.model=='MobileNetV3_Large':
+    net = MobileNetV3_Large()     
+elif opt.model=='MobileNetV3_Small':
+    net = MobileNetV3_Small()   
+    
 if opt.resume:
     # Load checkpoint.
     print('==> Resuming from checkpoint..')
@@ -183,20 +189,6 @@ def test(epoch):
         if not os.path.isdir(path):
             os.mkdir(path)
         torch.save(state, os.path.join(path, 'Test_model.t7'))
-        #下面的if语句用来保存模型参数 (The following if statement is used to save the model's parameters)
-        if opt.model=='VGG19':
-            torch.save(net.state_dict(), './vgg19.pth')#我加的，保存每个epoch的模型参数
-        elif opt.model=='VGG16':
-            torch.save(net.state_dict(), './vgg16.pth')#我加的，保存每个epoch的模型参数
-        elif opt.model=='Resnet18':
-            torch.save(net.state_dict(), './Resnet18.pth')#我加的，保存每个epoch的模型参数
-        elif opt.model=='MobileNetV1':
-            torch.save(net.state_dict(), './MobileNetV1.pth')
-        elif opt.model=='MobileNetV2':
-            torch.save(net.state_dict(), './MobileNetV2.pth')
-            
-        best_Test_acc = Test_acc
-        best_Test_acc_epoch = epoch
 
 for epoch in range(start_epoch, total_epoch):
     train(epoch)
@@ -204,3 +196,4 @@ for epoch in range(start_epoch, total_epoch):
 
 print("best_Test_acc: %0.3f" % best_Test_acc)
 print("best_Test_acc_epoch: %d" % best_Test_acc_epoch)
+torch.save(net.state_dict(), './pretrainedmodels/'+opt.model+'.pth')

@@ -16,14 +16,14 @@ import time
 from sklearn.metrics import roc_curve
 from sklearn.metrics import auc
 import matplotlib.pyplot as plt
-from models.vgg import VGG
-from models.mobilenetv1 import MobileNetV1
 from models.mobilenetv2 import MobileNetV2
+from models.mobilenetv3 import MobileNetV3_Large
+
 
 # 定义一些超参数 
 batch_size = 64 
-learning_rate = 0.01 
-num_epoches = 60
+learning_rate = 0.005
+num_epoches = 150
 
 norm_mean=[0.485,0.456,0.406]
 norm_std=[0.229,0.224,0.225]
@@ -47,13 +47,11 @@ if torch.cuda.is_available():
     print("cuda is available!!!")
 
 #选择要训练的模型     
-modelstr="MobileNetV2"
-if modelstr=="VGG16" or modelstr=="VGG19":
-    model = VGG(modelstr)  
-elif modelstr=="MobileNetV1" :
-    model = MobileNetV1()
-elif modelstr=="MobileNetV2" :
+modelstr="MobileNetV3_Large"
+if modelstr=="MobileNetV2" :
     model = MobileNetV2()    
+elif modelstr=="MobileNetV3_Large" :
+    model =MobileNetV3_Large() 
     
 if use_cuda:
     model = model.cuda()
@@ -61,10 +59,14 @@ if use_cuda:
 # 定义损失函数和优化器
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=learning_rate) 
-          
+transfer_type="notransfer"
+
+
 #导入预训练的模型参数
 print("load pretrained model's paratmeters......")
+transfer_type="transfer"
 parameterfile='./pretrainedModels/'+modelstr+'.pth'
+print("pretrainedmodel's file:"+parameterfile)
 pretrained_dict=torch.load(parameterfile)
 model_dict = model.state_dict()
 state_dict={}
@@ -72,12 +74,13 @@ i=0
 j=0
 for k,v in pretrained_dict.items():
     i=i+1
-    if (k in model_dict.keys()) and (k[0:k.index('.')]not in('classifier','linear','fc')):
+    if (k in model_dict.keys()) and (k[0:k.index('.')]not in('classifier','linear','linear4','fc')):
         state_dict[k]=v
         j=j+1
         
 model_dict.update(state_dict)
 model.load_state_dict(model_dict)    
+
 
 #定义一些指标变量
 max_epoch=0
@@ -90,7 +93,8 @@ max_error_rate=0.0
 max_F_Measure=0.0
 max_auc=0.0
 
-#训练模型   
+#训练模型 
+print("The model is:"+modelstr)  
 print("Begin to train model...")
 time1 = time.time() #记录模型开始训练时间
 for epoch in range(num_epoches):
@@ -167,7 +171,7 @@ for epoch in range(num_epoches):
     #每test一次，就计算一次sensitivity等指标
     sensitivity=TP/(TP+FN) #即TPR，可以通过求acc同时获得
     specificity=TN/(TN+FP) 
-    G_Mean=(sensitivity+specificity)**0.5  #开平方根
+    G_Mean=(sensitivity*specificity)**0.5  #开平方根
     error_rate=(FP+FN)/(TP+TN+FP+FN)  #即FPR，可以通过求acc同时获得
     F_Measure=2*TP/(2*TP+FP+FN)
     fpr,tpr,thresholds=roc_curve(y,pred_per,pos_label=1)
@@ -185,22 +189,18 @@ for epoch in range(num_epoches):
         max_F_Measure=F_Measure
         
         #这句话用来保存模型
-        if  max_auc>0.9:           
-            torch.save(model,'./bestmodels/tmp/'+modelstr+str(round(max_test_acc,4))+"+"+str(round(max_auc,4))+'.pth')
+        if max_test_acc>=0.87 and max_auc>=0.93:           
+            torch.save(model,'./bestmodels/tmp/'+transfer_type+'-'+modelstr+'('+str(round(max_test_acc,4))+"+"+str(round(max_auc,4))+')'+'.pth')
+            #break
         
-        if modelstr=="VGG16":
-            fpr1=fpr
-            tpr1=tpr
-        elif modelstr=="VGG19":
-            fpr2=fpr
-            tpr2=tpr
-        elif modelstr=="MobileNetV1":
-            fpr3=fpr
-            tpr3=tpr
-        elif modelstr=="MobileNetV2":
+        if modelstr=="MobileNetV2":
+            fpr4=fpr
+            tpr4=tpr
+        elif modelstr=="MobileNetV3_Large":
             fpr4=fpr
             tpr4=tpr
 
+            
 print("max_epoch is:",max_epoch)
 print("max_test_acc is:",max_test_acc)
 print("max_auc is:",max_auc)    
@@ -216,25 +216,14 @@ print("Time spent is:"+str(int(time2-time1)))
 
 '''  
 #记录每个模型的fpr和tpr
-if modelstr=="VGG16":
-    datafile = open("./VGG16ROC.txt", "w")
-    datafile.write(str(fpr1)+'\n')
-    datafile.write(str(tpr1)+'\n')
-    datafile.close()
-elif modelstr=="VGG19":
-    datafile = open("./VGG19ROC.txt", "w")
-    datafile.write(str(fpr2)+'\n')
-    datafile.write(str(tpr2)+'\n')
-    datafile.close()
-elif modelstr=="MobileNetV1":
-    datafile = open("./MobileNetV1ROC.txt", "w")
-    datafile.write(str(fpr3)+'\n')
-    datafile.write(str(tpr3)+'\n')
-    datafile.close()
-elif modelstr=="MobileNetV2":
-    datafile = open("./MobileNetV2ROC.txt", "w")
+if modelstr=="MobileNetV2":
+    datafile = open("./rocdatafile/tmp/MobileNetV2ROC"+'-'+transfer_type+'-'+str(round(max_test_acc,4))+"-"+str(round(max_auc,4))+".txt", "w")
     datafile.write(str(fpr4)+'\n')
     datafile.write(str(tpr4)+'\n')
     datafile.close()    
-'''
-   
+elif modelstr=="MobileNetV3_Large":
+    datafile = open("./rocdatafile/tmp/MobileNetV3_LargeROC"+'-'+transfer_type+'-'+str(round(max_test_acc,4))+"-"+str(round(max_auc,4))+".txt", "w")
+    datafile.write(str(fpr4)+'\n')
+    datafile.write(str(tpr4)+'\n')
+    datafile.close()
+'''   

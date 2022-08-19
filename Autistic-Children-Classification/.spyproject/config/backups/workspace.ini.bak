@@ -6,5 +6,5 @@ save_non_project_files = False
 
 [main]
 version = 0.2.0
-recent_files = ['C:\\Users\\R7-1700JY\\.spyder-py3\\temp.py', 'autism_face_classification.py', 'multi_classifer_v1.py', 'models\\mobilenetv1.py', 'models\\vgg.py', 'models\\mobilenetv2.py']
+recent_files = ['C:\\Users\\R7-1700JY\\.spyder-py3\\temp.py', 'autism_face_classification.py', 'multi_classifer_v1.py', 'multi_classifer_v2.py', 'models\\mobilenetv3.py', 'models\\mobilenetv1.py', 'autism_face_classification_v1.py', 'draw_line_char.py', 'models\\mobilenetv2.py']
 
