@@ -11,7 +11,6 @@ import time
 from sklearn.metrics import roc_curve
 from sklearn.metrics import auc
 from models.mobilenetv2 import MobileNetV2
-from models.mobilenetv1 import MobileNetV1
 from models.mobilenetv3 import MobileNetV3_Large
 
 # 定义一些超参数
